@@ -1,0 +1,17 @@
+hdfs dfs -rm -r /user/$USER/output
+hdfs dfs -cat /data/assignments/ex2/part1/small/d1.txt > test.txt
+hdfs dfs -ls /data/assignments/ex2/part1/small
+hdfs dfs -cat /user/$USER/output/*
+
+hadoop jar /opt/hadoop/hadoop-2.7.3/share/hadoop/tools/lib/hadoop-streaming-2.7.3.jar \
+-input /data/assignments/ex2/part1/small/* \
+-output /user/$USER/output/ \
+-mapper mapper1.py -file mapper1.py \
+-combiner combiner1.py -file combiner1.py \
+-reducer reducer1.py -file reducer1.py
+
+
+hadoop jar /opt/hadoop/hadoop-2.7.3/share/hadoop/tools/lib/hadoop-streaming-2.7.3.jar -D mapreduce.job.output.key.comparator.class=org.apache.hadoop.mapreduce.lib.partition.KeyFieldBasedComparator -D mapreduce.job.reduces=1 -D stream.num.map.output.key.fields=1 -D stream.map.output.field.separator="\t" -D mapreduce.partition.keypartitioner.options=-k1 -D mapreduce.partition.keycomparator.options=-k1,1n -input /user/$USER/output -output /user/$USER/assignment2/task4 
+
+hdfs dfs -rm -r /user/$USER/assignment2/task4 
+
